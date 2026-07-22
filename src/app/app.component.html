@@ -1,1 +1,11 @@
-<h1>Motor de Decisiones Vivo</h1>
+<main class="container">
+  <h1>Motor de Decisiones Vivo</h1>
+  <section class="leccion-card">
+    <h2>{{ leccionActual?.titulo }}</h2>
+    <p class="metafora">{{ leccionActual?.metafora }}</p>
+    <div class="codigo-box">
+      <pre><code>{{leccionActual?.id}}</code></pre>
+    </div>
+  </section>
+</main>
+<router-outlet></router-outlet>
