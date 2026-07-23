@@ -6,6 +6,16 @@
     <div class="codigo-box">
       <pre><code>{{leccionActual?.id}}</code></pre>
     </div>
+    <div class="codigo-box">
+      <pre><code>{{leccionActual?.opciones}}</code></pre>
+    </div>
+    <div class="opciones-contenedor">
+      @for (opcion of leccionActual?.opciones; track opcion.id) {
+        <button (click)="evaluarOpcion(opcion.id)" class="btn-opcion">
+          {{ opcion.textoOpcion }}
+        </button>
+      }
+    </div>
   </section>
 </main>
 <router-outlet></router-outlet>
