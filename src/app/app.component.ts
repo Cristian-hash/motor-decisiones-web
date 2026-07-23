@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LeccionService } from './services/leccion.service';
 import { LeccionCompletaDTO } from './models/leccion.dto'; //1. importas la forma de la caja
+import { RespuestaEstudianteDTO } from './models/evaluacion.dto';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -24,6 +25,25 @@ export class App {
       },
       error: (error) => {
         console.error('El mensajero fracasó', error);
+      },
+    });
+  }
+
+  evaluarOpcion(idOpcionSeleccionada: number) {
+    console.log('El usuario hizo clic en la opcion ID', idOpcionSeleccionada);
+    const paqueteDeRespuesta: RespuestaEstudianteDTO = {
+      usuarioId: 1,
+      leccionId: this.leccionActual?.id || 1,
+      opcionSeleccionadaId: idOpcionSeleccionada,
+    };
+
+    this.leccionService.enviarRespuesta(paqueteDeRespuesta).subscribe({
+      next: (feedbackDelBackend) => {
+        console.log('¡El Chef evaluo la respuesta!', feedbackDelBackend);
+        alert(feedbackDelBackend.mensajeJustificacion);
+      },
+      error: (error) => {
+        console.error('Error al evaluar la respuesta', error);
       },
     });
   }

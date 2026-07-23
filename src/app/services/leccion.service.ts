@@ -19,7 +19,7 @@ export class LeccionService {
     return this.http.get<LeccionCompletaDTO>(`${this.apiUrl}/${id}`);
   }
   //NUEVO METODO : Toma la respuesta del alumno y la lanza al backend
-  envarRespuesta(respuesta: RespuestaEstudianteDTO): Observable<FeedbackDTO> {
+  enviarRespuesta(respuesta: RespuestaEstudianteDTO): Observable<FeedbackDTO> {
     return this.http.post<FeedbackDTO>(this.evaluacionUrl, respuesta);
   }
 }
