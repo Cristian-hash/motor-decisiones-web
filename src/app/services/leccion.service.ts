@@ -11,7 +11,7 @@ export class LeccionService {
   private apiUrl = 'http://localhost:8080/api/v1/lecciones';
 
   private evaluacionUrl = 'http://localhost:8080/api/v1/evaluaciones/decidir';
-  //Le inyectamos el telefono al mensajero en el constructor
+  // Solo pedimos el "teléfono" (HttpClient). La centralita ya le conectó el brazo robótico.
   constructor(private http: HttpClient) {}
 
   //Retorna una promesa(Observable)deque entregara la caja con la Lección

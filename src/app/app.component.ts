@@ -31,12 +31,14 @@ export class App {
 
   evaluarOpcion(idOpcionSeleccionada: number) {
     console.log('El usuario hizo clic en la opcion ID', idOpcionSeleccionada);
+    //1 .Armamos el paquete (DTO) exactactamente como lo espera Java
     const paqueteDeRespuesta: RespuestaEstudianteDTO = {
-      usuarioId: 1,
+      usuarioId: 1, // Nota: En el futuro esto también se sacará del Token JWT
       leccionId: this.leccionActual?.id || 1,
       opcionSeleccionadaId: idOpcionSeleccionada,
     };
 
+    //2. Firmamos la orden para el Mensajero (POST)
     this.leccionService.enviarRespuesta(paqueteDeRespuesta).subscribe({
       next: (feedbackDelBackend) => {
         console.log('¡El Chef evaluo la respuesta!', feedbackDelBackend);
