@@ -1,59 +1,150 @@
-# FrontendTesis
+# 🎨 Frontend Ciego — Motor de Decisiones (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.19.
+> **Interfaz reactiva y desacoplada para la evaluación de patrones de diseño y decisiones arquitectónicas.**
 
-## Development server
+---
 
-To start a local development server, run:
+# 🧱 Filosofía de Diseño (Cliente Ciego)
+
+Esta aplicación en **Angular Standalone** sigue el principio estricto de **Cliente Ciego**, donde toda la lógica de negocio reside exclusivamente en el backend.
+
+## Principios
+
+- **Sin lógica de negocio en el cliente:** La interfaz no evalúa respuestas, no calcula puntajes y no toma decisiones de negocio, evitando manipulaciones desde las DevTools (F12).
+- **Componentes puros:** El HTML únicamente representa el estado utilizando Angular Standalone y el nuevo Control Flow (`@if`, `@for`).
+- **Comunicación desacoplada:** Los componentes consumen servicios especializados sin conocer la implementación del backend.
+- **Seguridad automatizada (DRY):** Un `HttpInterceptor` agrega automáticamente el encabezado:
+
+```http
+Authorization: Bearer <JWT>
+```
+
+a todas las solicitudes protegidas, evitando duplicación de código.
+
+---
+
+# 📊 Flujo de Comunicación End-to-End
+
+```mermaid
+graph LR
+
+    classDef frontend fill:#dd0031,stroke:#ffffff,stroke-width:2px,color:#ffffff;
+    classDef security fill:#fbc02d,stroke:#ffffff,stroke-width:2px,color:#000000;
+    classDef backend fill:#6db33f,stroke:#ffffff,stroke-width:2px,color:#ffffff;
+    classDef user fill:#8e44ad,stroke:#ffffff,stroke-width:2px,color:#ffffff;
+
+    U((🧑‍🎓 Alumno)):::user
+
+    subgraph ANGULAR["Frontend Ciego (Angular)"]
+        HTML["🖼️ app.component.html<br/>Vista Reactiva"]:::frontend
+        TS["⚙️ app.component.ts<br/>Controlador de Eventos"]:::frontend
+        SERVICE["🚚 leccion.service.ts<br/>Cliente HTTP"]:::frontend
+    end
+
+    subgraph SECURITY["Seguridad"]
+        INTERCEPTOR["🦾 auth.interceptor.ts<br/>Inyección Automática JWT"]:::security
+    end
+
+    subgraph BACKEND["Spring Boot"]
+        API["🧠 Controller → Service<br/>Motor de Decisiones"]:::backend
+    end
+
+    U -->|1. Selecciona respuesta| HTML
+    HTML -->|2. Envía evento| TS
+    TS -->|3. Construye RespuestaDTO| SERVICE
+    SERVICE -->|4. HTTP POST| INTERCEPTOR
+    INTERCEPTOR -->|5. Authorization Bearer JWT| API
+    API -->|6. FeedbackDTO| HTML
+```
+
+---
+
+# 🚀 Desarrollo
+
+## Servidor de desarrollo
+
+Iniciar la aplicación en modo desarrollo:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La aplicación estará disponible en:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+http://localhost:4200/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## Compilación
 
-## Building
-
-To build the project run:
+Generar la versión de producción:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Los archivos compilados se almacenarán en:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```
+dist/
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+# 🏗️ Arquitectura
 
-```bash
-ng e2e
+```
+┌───────────────┐
+│     Usuario   │
+└───────┬───────┘
+        │
+        ▼
+┌──────────────────────────┐
+│ Angular Standalone       │
+│  • Componentes           │
+│  • Templates             │
+│  • Servicios HTTP        │
+└───────────┬──────────────┘
+            │
+            ▼
+┌──────────────────────────┐
+│ HttpInterceptor          │
+│  • JWT                   │
+│  • Seguridad             │
+└───────────┬──────────────┘
+            │
+            ▼
+┌──────────────────────────┐
+│ Spring Boot              │
+│  • Controllers           │
+│  • Services              │
+│  • Motor de Decisiones   │
+└──────────────────────────┘
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+# ✅ Beneficios de la Arquitectura
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Cliente completamente desacoplado de las reglas de negocio.
+- Seguridad centralizada mediante `HttpInterceptor`.
+- Componentes reutilizables y de responsabilidad única.
+- Comunicación REST limpia mediante DTOs.
+- Arquitectura escalable y mantenible.
+- Compatible con Angular Standalone y Control Flow moderno.
+- Evita la manipulación de reglas de negocio desde el navegador.
+
+---
+
+# 🧠 Fundamentación
+
+Esta estrategia implementa una arquitectura donde el **frontend actúa únicamente como cliente de presentación**, mientras que el **backend concentra toda la lógica de negocio y las decisiones arquitectónicas**.
+
+Este enfoque proporciona:
+
+- Separación estricta de responsabilidades.
+- Mayor seguridad al impedir que el cliente calcule resultados.
+- Facilidad para evolucionar la lógica del sistema sin modificar la interfaz.
+- Documentación alineada con buenas prácticas empresariales y arquitecturas REST modernas.
