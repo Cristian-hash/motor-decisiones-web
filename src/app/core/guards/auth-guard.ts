@@ -12,7 +12,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     //Si no hay token ,lo mandamos al login y devolvemos 'false' (bloqueamos la ruut actual)
-    router.navigate(['']);
+    router.navigate(['/login']);
     return false;
   }
 };
