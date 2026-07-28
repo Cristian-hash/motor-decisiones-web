@@ -17,13 +17,6 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   iniciarSesion(credenciales: AuthRequestDTO): Observable<AuthResponseDTO> {
-    return this.http.post<AuthResponseDTO>(`${this.apiUrl}/login`, credenciales).pipe(
-      tap((respuesta) => {
-        // 1. Guardamos la llave en el bolsillo del navegador (para que sobreviva al F5)
-        localStorage.setItem('token', respuesta.token);
-        // 2. Escribimos en la Pizarra Central (tocamos la campana para avisarle al HTML)
-        this.tokenActual.set(respuesta.token);
-      }),
-    );
+    return this.http.post<AuthResponseDTO>(`${this.apiUrl}/login`, credenciales).pipe();
   }
 }
