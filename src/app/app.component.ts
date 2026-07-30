@@ -1,9 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LeccionService } from './services/leccion.service';
 import { LeccionCompletaDTO } from './models/leccion.dto';
 import { RespuestaEstudianteDTO } from './models/evaluacion.dto';
-
+import { AuthService } from './core/services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -14,13 +14,16 @@ import { RespuestaEstudianteDTO } from './models/evaluacion.dto';
 export class App {
   protected readonly title = signal('frontend-tesis');
 
+  //2.Inyectado y publico para el HTML
+  public authService = inject(AuthService);
+
   // 1. LA MESA VACÍA: Creamos una variable para guardar la lección,
   // pero al principio arranca en "undefined" (vacía).
   leccionActual: LeccionCompletaDTO | undefined;
 
   // 2. INYECTAR EL SERVICIO: Contratamos al mesero (LeccionService).
   constructor(private leccionService: LeccionService) {
-    console.log('📡 [Frontend] Pidiendo la Lección 1 a Spring Boot...');
+    console.log(' [Frontend] Pidiendo la Lección 1 a Spring Boot...');
 
     // 3. LA LLAMADA: Le pedimos al mesero que traiga la lección con ID 1.
     this.leccionService.obtenerLeccion(1).subscribe({
@@ -37,7 +40,7 @@ export class App {
 
   // 5. ESCUCHAR EL CLICK: Cuando el usuario toque un botón en el HTML...
   evaluarOpcion(idOpcionSeleccionada: number) {
-    console.log('👉 [Frontend] El usuario eligió la opción ID:', idOpcionSeleccionada);
+    console.log(' [Frontend] El usuario eligió la opción ID:', idOpcionSeleccionada);
 
     // 6. EMPAQUETAR DTO: Armamos la respuesta para enviarla a evaluar.
     const paqueteDeRespuesta: RespuestaEstudianteDTO = {

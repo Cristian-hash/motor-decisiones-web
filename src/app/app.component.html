@@ -25,4 +25,27 @@
     </div>
   }
 </main>
+<nav
+  style="
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #f4f4f4;
+    align-items: center;
+  "
+>
+  <div>
+    <strong> Mi plataforma Gamificada </strong>
+  </div>
+
+  <div>
+    @if (authService.tokenActual()) {
+      <span style="margin-right: 15px"> Bienvenido Arquitecto</span>
+      <button (click)="authService.cerrarSesion()">Cerrar Sesion</button>
+    } @else {
+      <span style="margin-right: 15px">Aun no estas conectado.</span>
+      <a routerLink="/login">Iniciar Sesion</a>
+    }
+  </div>
+</nav>
 <router-outlet></router-outlet>
