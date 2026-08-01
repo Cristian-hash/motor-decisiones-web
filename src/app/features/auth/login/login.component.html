@@ -1,1 +1,47 @@
-<p>login works!</p>
+<div class="login-container" style="max-with: 400px; margin: 50px auto; font-family: sans-serif">
+  <h2>Iniciar Sesión</h2>
+  <p>Ingresa tus credenciaales para acceder al simulador.</p>
+
+  @if (mensajeError) {
+    <div
+      style="
+        background-color: #ffebee;
+        color: red;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+      "
+    >
+      {{ mensajeError }}
+    </div>
+  }
+
+  <div style="display: flex; flex-direction: column; gap: 15px">
+    <div>
+      <label>Email:</label><br />
+      <input
+        type="email"
+        [(ngModel)]="credenciales.email"
+        placeholder="tu@email.com"
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div>
+      <label>Contraseña:</label><br />
+      <input
+        type="password"
+        [(ngModel)]="credenciales.password"
+        placeholder="*********"
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <button
+      (click)="ingresar()"
+      style="padding: 10px; background-color: #0056b3; color: white; border: none; cursor: pointer"
+    >
+      Ingresar al Sistema
+    </button>
+  </div>
+</div>

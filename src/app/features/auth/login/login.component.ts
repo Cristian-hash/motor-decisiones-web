@@ -22,4 +22,20 @@ export class LoginComponent {
   };
   //3. El cartel de error (inicia limpio)
   mensajeError: string = '';
+
+  ingresar() {
+    this.mensajeError = '';
+    console.log('La puerta envia el mensajero...');
+
+    this.authService.iniciarSesion(this.credenciales).subscribe({
+      next: () => {
+        console.log('✅Acceso concedido. Abriendo el sálon...');
+        this.router.navigate(['/leccion/1']);
+      },
+      error: (errorRespuesta) => {
+        console.error('❌ Error en la puerta:', errorRespuesta);
+        this.mensajeError = 'Credenciales incorrectas. Intenta de nuevo.';
+      },
+    });
+  }
 }
