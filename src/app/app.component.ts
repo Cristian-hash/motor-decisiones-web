@@ -1,5 +1,5 @@
 import { Component, signal, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { LeccionService } from './services/leccion.service';
 import { LeccionCompletaDTO } from './models/leccion.dto';
 import { RespuestaEstudianteDTO } from './models/evaluacion.dto';
@@ -7,7 +7,7 @@ import { AuthService } from './core/services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -20,6 +20,11 @@ export class App {
   // 1. LA MESA VACÍA: Creamos una variable para guardar la lección,
   // pero al principio arranca en "undefined" (vacía).
   leccionActual: LeccionCompletaDTO | undefined;
+  // --- BANDERAS DE LA INTERFAZ(Feedback) ---
+  mostrarFeedBack: boolean = false;
+  esCorrecto: boolean = false;
+  mensajeFeedback: string = '';
+  puntosGanados: number = 0;
 
   // 2. INYECTAR EL SERVICIO: Contratamos al mesero (LeccionService).
   constructor(private leccionService: LeccionService) {
@@ -53,7 +58,17 @@ export class App {
     this.leccionService.enviarRespuesta(paqueteDeRespuesta).subscribe({
       next: (feedback) => {
         console.log('✅ [Backend dice]:', feedback);
-        alert(feedback.mensajeJustificacion); // Muestra un popup simple con el resultado
+
+        // 1. Levantamos las banderas con los datos del servidor
+
+        this.esCorrecto = feedback.esCorrecto;
+        this.mensajeFeedback = feedback.mensajeJustificacion;
+        this.puntosGanados = feedback.puntosObtenidis;
+
+        //2. Le damos la orden final al HTML para que aparezca
+        this.mostrarFeedBack = true;
+
+        //3. (OPCIONAL /EXTRA)   aCTUALIZAR LA PIZARRA GLOBAL DE PUNTOS si la tienes
       },
       error: (err) => {
         console.error('❌ [Frontend] Error al evaluar:', err);

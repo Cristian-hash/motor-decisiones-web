@@ -18,6 +18,18 @@
           </button>
         }
       </div>
+      @if (mostrarFeedBack == true) {
+        <div>
+          <h3>{{ esCorrecto ? '¡Excelente decision!' : 'Decision incorrecta' }}</h3>
+          <p>{{ mensajeFeedback }}</p>
+          @if (esCorrecto) {
+            <p class="puntos">
+              Has ganado <strong> + {{ puntosGanados }} XP.</strong>
+            </p>
+          }
+          <button class="btn-cerrar" (click)="mostrarFeedBack = false">Entendido</button>
+        </div>
+      }
     </section>
   } @else {
     <div class="cargando">
