@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LeccionCompletaDTO } from '../../models/leccion.dto';
 import { RespuestaEstudianteDTO } from '../../models/evaluacion.dto';
 import { LeccionService } from '../../services/leccion.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-leccion',
   imports: [],
@@ -17,6 +18,8 @@ export class LeccionComponent {
   mensajeFeedback: string = '';
   puntosGanados: number = 0;
   tituloFeedback: string = '';
+
+  private router = inject(Router);
 
   constructor(private leccionService: LeccionService) {
     console.log(' [Frontend] Pidiendo la Lección 1 a Spring Boot...');
