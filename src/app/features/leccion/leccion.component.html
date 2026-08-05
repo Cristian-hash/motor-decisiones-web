@@ -27,7 +27,13 @@
               Has ganado <strong> + {{ puntosGanados }} XP.</strong>
             </p>
           }
-          <button class="btn-cerrar" (click)="mostrarFeedBack = false">Entendido</button>
+          @if (esCorrecto) {
+            <button class="btn-cerrar" (click)="avanzarSiguienteLeccion()">
+              Siguiente Lección
+            </button>
+          } @else {
+            <button class="btn-cerrar" (click)="mostrarFeedBack = false">Intentar de nuevo</button>
+          }
         </div>
       }
     </section>

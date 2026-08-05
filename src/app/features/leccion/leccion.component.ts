@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LeccionCompletaDTO } from '../../models/leccion.dto';
 import { RespuestaEstudianteDTO } from '../../models/evaluacion.dto';
 import { LeccionService } from '../../services/leccion.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-leccion',
   imports: [],
@@ -19,9 +19,12 @@ export class LeccionComponent {
   puntosGanados: number = 0;
   tituloFeedback: string = '';
 
+  // --- EXPERTOS CONTRATADOS ---
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private leccionService = inject(LeccionService);
 
-  constructor(private leccionService: LeccionService) {
+  constructor() {
     console.log(' [Frontend] Pidiendo la Lección 1 a Spring Boot...');
 
     // 3. LA LLAMADA: Le pedimos al mesero que traiga la lección con ID 1.
@@ -82,5 +85,12 @@ export class LeccionComponent {
         }
       },
     });
+  }
+  avanzarSiguienteLeccion() {
+    this.mostrarFeedBack = false;
+    const siguienteId = (this.leccionActual?.id || 0) + 1;
+
+    console.log(`Viajando a la siguiente lección :ID ${siguienteId}`);
+    this.router.navigate(['/leccion', siguienteId]);
   }
 }
