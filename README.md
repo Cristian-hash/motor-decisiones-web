@@ -23,6 +23,20 @@ a todas las solicitudes protegidas, evitando duplicación de código.
 
 ---
 
+## 🧠 Fusión de Dos Mundos: Frontend Stateful vs Backend Stateless
+
+Para garantizar la máxima escalabilidad y una experiencia de usuario ininterrumpida, el sistema divide sus responsabilidades en dos paradigmas arquitectónicos diametralmente opuestos pero complementarios:
+
+- **El Juez Imparcial (Backend - Spring Boot):** Opera bajo una arquitectura estrictamente _Stateless_ (sin memoria). Evalúa cada petición de forma individual exigiendo una firma criptográfica (JWT) para procesar las reglas del negocio. El servidor delega la retención del estado visual y solo invierte poder de cómputo en verificar identidades y evaluar respuestas.
+- **El Director de la Experiencia (Frontend - Angular):** Mantiene un _Estado Global_ en la memoria del navegador. Se encarga de recordar los puntos, el perfil del alumno y orquestar un flujo asíncrono y fluido sin saturar la red.
+
+### 🍽️ La Metáfora de Orquestación
+
+- **El Mesero (Angular):** Conoce al usuario, le da la bienvenida por su nombre y mantiene la experiencia dinámica y personalizada en la mesa (Estado Global). Si detecta un error de sesión, escolta amablemente al usuario a la salida (Auto-Logout).
+- **El Chef (Spring Boot):** Ignora quién es el cliente; solo recibe un ticket blindado por DTOs con un sello oficial de autenticidad (JWT). Si el ticket es válido, el Chef procesa la lógica, dicta la sentencia inmutable en la base de datos, entrega el plato y se olvida del usuario instantáneamente.
+
+---
+
 # 📊 Flujo de Comunicación End-to-End
 
 ```mermaid

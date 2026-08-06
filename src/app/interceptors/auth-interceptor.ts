@@ -33,12 +33,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // ESCENARIO A: El Faraón (Backend) dice que el token caducó o es falso
       if (error.status === 401) {
-        console.warn('[Interceptor Token caducado o invalido. Ejecutando protocolo de limpieza.]');
+        console.warn('[Interceptor] Token caducado o invalido. Ejecutando protocolo de limpieza.');
         alert('Tu sesión ha expirado por seguridad. Por favor, ingresa nuevamente.');
         authService.cerrarSesion();
       } else if (error.status === 500) {
-        console.error('[Interceptor] Error critico en el serivdor de SpringBoot.');
-        alert('El motor de Decisiones esta experimentando problemas,Intenta más tarde.');
+        console.error('[Interceptor] Error critico en el servidor de SpringBoot.');
+        alert('El motor de Decisiones esta experimentando problemas. Intenta más tarde.');
       }
       return throwError(() => error);
     }),
