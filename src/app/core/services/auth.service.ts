@@ -11,8 +11,8 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/api/v1/auth';
   private http = inject(HttpClient);
   private router = inject(Router);
-  //NUESTRA PIZARRA CENTRAL (signal)
-  //Guardaremos el token aqui para que toda la app sepa si hay alguien conectado.
+  // NUESTRA PIZARRA CENTRAL (signal)
+  // Guardaremos el token aqui para que toda la app sepa si hay alguien conectado.
   // Inicia leyendo el localStorage por si el usuario recargo la pagina(F5)
   tokenActual = signal<string | null>(localStorage.getItem('token'));
   constructor() {}
@@ -30,10 +30,10 @@ export class AuthService {
   }
   cerrarSesion() {
     console.log('Destruyendo llaves y cerrando sesión');
-    //1. Borramos la llave del bolsillo
+    //1. Borramos la llave del bolsillo.
     localStorage.removeItem('token');
     this.tokenActual.set(null);
-    //2. Borramos la Pizarra (tocamos la campana avisando que ya no hay usuario)
+    //2. Borramos la Pizarra (tocamos la campana avisando que ya no hay usuario).
     this.router.navigate(['/login']);
-  } // Fin de la clase
+  }
 }

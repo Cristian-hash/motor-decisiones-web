@@ -1,8 +1,9 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { LeccionService } from './services/leccion.service';
 import { LeccionCompletaDTO } from './models/leccion.dto';
 import { AuthService } from './core/services/auth.service';
+import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-root',
   standalone: true,
