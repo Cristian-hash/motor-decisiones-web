@@ -7,6 +7,6 @@ export interface RespuestaEstudianteDTO {
 export interface FeedbackDTO {
   esCorrecto: boolean;
   mensajeJustificacion: string;
-  puntosObtenidis: number;
+  puntosObtenidos: number;
   consejoSiguienteNivel: string;
 }

@@ -1,37 +1,55 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LeccionCompletaDTO } from '../../models/leccion.dto';
 import { RespuestaEstudianteDTO } from '../../models/evaluacion.dto';
 import { LeccionService } from '../../services/leccion.service';
-import { Router, ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-leccion',
   imports: [],
   templateUrl: './leccion.component.html',
   styleUrl: './leccion.component.css',
 })
-export class LeccionComponent {
+export class LeccionComponent implements OnInit {
   leccionActual: LeccionCompletaDTO | undefined;
 
-  // --- BANDERAS DE LA INTERFAZ(Feedback) ---
+  // --- BANDERAS DE LA INTERFAZ ---
   mostrarFeedBack: boolean = false;
   esCorrecto: boolean = false;
   mensajeFeedback: string = '';
-  puntosGanados: number = 0;
   tituloFeedback: string = '';
+  puntosGanados: number = 0;
 
   // --- EXPERTOS CONTRATADOS ---
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private route = inject(ActivatedRoute); // El vigía de la URL
   private leccionService = inject(LeccionService);
 
-  constructor() {
-    console.log(' [Frontend] Pidiendo la Lección 1 a Spring Boot...');
+  // El constructor queda completamente limpio. Solo prepara herramientas.
+  constructor() {}
 
-    // 3. LA LLAMADA: Le pedimos al mesero que traiga la lección con ID 1.
-    this.leccionService.obtenerLeccion(1).subscribe({
+  ngOnInit() {
+    // LA MAGIA DEL OBSERVER: Suscribimos la campanita a la URL
+    this.route.paramMap.subscribe({
+      next: (parametrosUrl) => {
+        // Extraemos el identificador fresco apenas la URL cambie
+        const idAtrapado = Number(parametrosUrl.get('id'));
+
+        console.log(` [Frontend] URL cambió. Pidiendo Lección ${idAtrapado}...`);
+
+        // Ejecutamos la petición delegando el trabajo pesado
+        this.pedirLeccionAlBackend(idAtrapado);
+      },
+    });
+  }
+
+  // Lógica pesada separada para mantener orden
+  pedirLeccionAlBackend(idLeccion: number) {
+    this.leccionService.obtenerLeccion(idLeccion).subscribe({
       next: (datosQueLlegaron) => {
-        // 4. ¡LLEGARON LOS DATOS!: Ponemos el DTO real sobre la "mesa".
         this.leccionActual = datosQueLlegaron;
+        // Bajamos la bandera visual para iniciar con la pantalla limpia
+        this.mostrarFeedBack = false;
         console.log('✅ [Frontend] ¡Lección cargada!', this.leccionActual);
       },
       error: (error) => {
@@ -41,56 +59,44 @@ export class LeccionComponent {
   }
 
   evaluarOpcion(idOpcionSeleccionada: number) {
-    console.log(' [Frontend] El usuario eligió la opción ID:', idOpcionSeleccionada);
-
-    // 6. EMPAQUETAR DTO: Armamos la respuesta para enviarla a evaluar.
     const paqueteDeRespuesta: RespuestaEstudianteDTO = {
-      usuarioId: 1, // Por ahora quemado, luego vendrá del Login JWT
-      leccionId: this.leccionActual?.id || 1, // El escudo ?. protege por si acaso
+      usuarioId: 1,
+      leccionId: this.leccionActual?.id || 1,
       opcionSeleccionadaId: idOpcionSeleccionada,
     };
 
-    // 7. ENVIAR A EVALUAR: Le pasamos la respuesta al Motor de Decisiones
     this.leccionService.enviarRespuesta(paqueteDeRespuesta).subscribe({
       next: (feedback) => {
-        console.log('✅ [Backend dice]:', feedback);
-
-        // 1. Levantamos las banderas con los datos del servidor
-
         this.esCorrecto = feedback.esCorrecto;
         this.mensajeFeedback = feedback.mensajeJustificacion;
-        this.puntosGanados = feedback.puntosObtenidis;
-        this.tituloFeedback = feedback.esCorrecto ? '¡Excelente decisión!' : 'Decisión incorrecta';
-        //2. Le damos la orden final al HTML para que aparezca
-        this.mostrarFeedBack = true;
+        this.puntosGanados = feedback.puntosObtenidos;
 
-        //3. (OPCIONAL /EXTRA)   ACTUALIZAR LA PIZARRA GLOBAL DE PUNTOS si la tienes
+        // El orquestador decide el texto exacto
+        this.tituloFeedback = feedback.esCorrecto ? '¡Excelente decisión!' : 'Decisión incorrecta';
+
+        this.mostrarFeedBack = true;
       },
       error: (err) => {
-        // 1. Imprimimos el error oculto para nosotros los desarrolladores
-        console.error('❌ [Frontend] Error al evaluar:', err);
-        // 2. Analizamos qué tipo de error devolvió el Faraón
-        if (err.status == 409) {
-          // Si es 409 (Conflicto/Duplicado), levantamos banderas con un mensaje claro
+        // Evaluamos el rechazo del backend
+        if (err.status === 409) {
           this.esCorrecto = false;
           this.tituloFeedback = 'Aviso del Sistema';
           this.mensajeFeedback =
-            'Ya has completado esta leccíón anteriomente. ¡Avanza a la siguiente pregunta!';
+            'Ya has completado esta lección anteriormente. ¡Avanza al siguiente desafío!';
           this.mostrarFeedBack = true;
         } else {
-          // Si es cualquier otro error (ej. se cayó el servidor - 500)
           this.esCorrecto = false;
-          this.mensajeFeedback = 'Ocurrio un problema de conexion con el motor de Desiciones';
+          this.tituloFeedback = 'Error de conexión';
+          this.mensajeFeedback = 'Ocurrió un problema de conexión con el Motor de Decisiones.';
           this.mostrarFeedBack = true;
         }
       },
     });
   }
-  avanzarSiguienteLeccion() {
-    this.mostrarFeedBack = false;
-    const siguienteId = (this.leccionActual?.id || 0) + 1;
 
-    console.log(`Viajando a la siguiente lección :ID ${siguienteId}`);
+  avanzarSiguienteLeccion() {
+    // Calculamos el siguiente destino y llamamos al recepcionista
+    const siguienteId = (this.leccionActual?.id || 0) + 1;
     this.router.navigate(['/leccion', siguienteId]);
   }
 }
