@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { AuthRequestDTO, AuthResponseDTO } from '../../models/auth.dto';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environments';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   //La direccion de tu Spring Boot
-  private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
   private router = inject(Router);
   // NUESTRA PIZARRA CENTRAL (signal)
