@@ -3,14 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LeccionCompletaDTO } from '../models/leccion.dto';
 import { RespuestaEstudianteDTO, FeedbackDTO } from '../models/evaluacion.dto';
+import { environment } from '../../environments/environments';
 @Injectable({
   providedIn: 'root',
 })
 export class LeccionService {
+  /* COMPUTADORA LOCAL
   // La direccion del Banco(Tu Stirng Boot)
   private apiUrl = 'http://localhost:8080/api/v1/lecciones';
 
-  private evaluacionUrl = 'http://localhost:8080/api/v1/evaluaciones/decidir';
+  private evaluacionUrl = 'http://localhost:8080/api/v1/evaluaciones/decidir';*/
+
+  private apiUrl = `${environment.apiUrl}/lecciones`;
+  private evaluacionUrl = `${environment.apiUrl}/evaluaciones/decidir`;
+
   // Solo pedimos el "teléfono" (HttpClient). La centralita ya le conectó el brazo robótico.
   constructor(private http: HttpClient) {}
 
