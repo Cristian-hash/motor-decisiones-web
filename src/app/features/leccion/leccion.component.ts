@@ -59,8 +59,22 @@ export class LeccionComponent implements OnInit {
   }
 
   evaluarOpcion(idOpcionSeleccionada: number) {
+    const token = localStorage.getItem('token');
+    let usuarioDinamico = 1; //Plan de emerigencia popr si algo falla
+
+    if (token) {
+      try {
+        //1
+        const payloadBase64 = token.split('.')[1];
+        const payloadDecodigicado = JSON.parse(atob(payloadBase64));
+        usuarioDinamico = payloadDecodigicado.id;
+      } catch (error) {
+        console.error('Error abriend el pasaporte JWT:', error);
+      }
+    }
+
     const paqueteDeRespuesta: RespuestaEstudianteDTO = {
-      usuarioId: 1,
+      usuarioId: usuarioDinamico,
       leccionId: this.leccionActual?.id || 1,
       opcionSeleccionadaId: idOpcionSeleccionada,
     };
