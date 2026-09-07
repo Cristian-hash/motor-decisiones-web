@@ -69,7 +69,7 @@ export class LeccionComponent implements OnInit {
         const payloadDecodigicado = JSON.parse(atob(payloadBase64));
         usuarioDinamico = payloadDecodigicado.id;
       } catch (error) {
-        console.error('Error abriend el pasaporte JWT:', error);
+        console.error('Error abriendo el pasaporte JWT:', error);
       }
     }
 
