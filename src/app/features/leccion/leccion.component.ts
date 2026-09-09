@@ -96,6 +96,7 @@ export class LeccionComponent implements OnInit {
           this.esCorrecto = false;
           this.tituloFeedback = 'Aviso del Sistema';
           this.mensajeFeedback =
+            err.error?.mensaje ||
             'Ya has completado esta lección anteriormente. ¡Avanza al siguiente desafío!';
           this.mostrarFeedBack = true;
         } else {
