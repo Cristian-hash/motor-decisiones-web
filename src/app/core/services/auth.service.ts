@@ -37,4 +37,17 @@ export class AuthService {
     //2. Borramos la Pizarra (tocamos la campana avisando que ya no hay usuario).
     this.router.navigate(['/login']);
   }
+
+  obtenerIdUsuarioActual(): number {
+    const token = localStorage.getItem('token');
+    if (!token) return 0;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadDecodificado = atob(payloadBase64);
+      const payloadJson = JSON.parse(payloadDecodificado);
+      return payloadJson.id;
+    } catch {
+      return 0;
+    }
+  }
 }

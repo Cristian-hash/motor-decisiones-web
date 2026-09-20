@@ -94,9 +94,8 @@ export class LeccionComponent implements OnInit {
         // Evaluamos el rechazo del backend
         if (err.status === 409) {
           this.esCorrecto = false;
-          this.tituloFeedback = 'Aviso del Sistema';
+          this.tituloFeedback = 'Leccion Completada';
           this.mensajeFeedback =
-            err.error?.mensaje ||
             err.error?.message ||
             'Ya has completado esta lección anteriormente. ¡Avanza al siguiente desafío!';
           this.mostrarFeedBack = true;
