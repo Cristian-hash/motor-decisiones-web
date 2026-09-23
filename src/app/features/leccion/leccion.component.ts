@@ -110,8 +110,13 @@ export class LeccionComponent implements OnInit {
   }
 
   avanzarSiguienteLeccion() {
-    // Calculamos el siguiente destino y llamamos al recepcionista
+    // 1. Observo: Calculamos el siguiente destino matemáticamente
     const siguienteId = (this.leccionActual?.id || 0) + 1;
+
+    // 2. Corrijo: Sellamos el pasaporte en el localStorage ANTES de caminar
+    localStorage.setItem('leccionActual', siguienteId.toString());
+
+    // 3. Avanzo: Llamamos al recepcionista para viajar a la nueva ruta
     this.router.navigate(['/leccion', siguienteId]);
   }
 }
