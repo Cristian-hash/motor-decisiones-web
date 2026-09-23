@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LeccionComponent } from './features/leccion/leccion.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth-guard';
+import { leccionGuard } from './core/guards/leccion-guard';
 
 export const routes: Routes = [
   {
@@ -11,6 +12,6 @@ export const routes: Routes = [
   {
     path: 'leccion/:id',
     component: LeccionComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, leccionGuard],
   },
 ];
