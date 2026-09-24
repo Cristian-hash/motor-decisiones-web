@@ -110,13 +110,19 @@ export class LeccionComponent implements OnInit {
   }
 
   avanzarSiguienteLeccion() {
-    // 1. Observo: Calculamos el siguiente destino matemáticamente
-    const siguienteId = (this.leccionActual?.id || 0) + 1;
+    // 1. Observo: Buscamos la verdad absoluta en la URL actual, no en el DTO
+    const idActualEnUrl = Number(this.route.snapshot.paramMap.get('id'));
 
-    // 2. Corrijo: Sellamos el pasaporte en el localStorage ANTES de caminar
+    // 2. Comprendo: Calculamos matemáticamente el siguiente paso
+    const siguienteId = idActualEnUrl + 1;
+    console.log(`[Arquitectura] Avanzando de lección ${idActualEnUrl} a ${siguienteId}`);
+
+    // 3. Corrijo: Sellamos la memoria del navegador ANTES de pedir el viaje
     localStorage.setItem('leccionActual', siguienteId.toString());
 
-    // 3. Avanzo: Llamamos al recepcionista para viajar a la nueva ruta
-    this.router.navigate(['/leccion', siguienteId]);
+    // 4. Avanzo: Ordenamos al orquestador visual que ejecute el cambio de pantalla
+    this.router.navigate(['/leccion', siguienteId]).then((viajeExitoso) => {
+      console.log(`[Frontend] ¿El Guardia permitió el paso?: ${viajeExitoso}`);
+    });
   }
 }
