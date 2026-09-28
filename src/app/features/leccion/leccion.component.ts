@@ -16,6 +16,7 @@ export class LeccionComponent implements OnInit {
   // --- BANDERAS DE LA INTERFAZ ---
   mostrarFeedBack: boolean = false;
   esCorrecto: boolean = false;
+  yaCompletada: boolean = false;
   mensajeFeedback: string = '';
   tituloFeedback: string = '';
   puntosGanados: number = 0;
@@ -50,6 +51,7 @@ export class LeccionComponent implements OnInit {
         this.leccionActual = datosQueLlegaron;
         // Bajamos la bandera visual para iniciar con la pantalla limpia
         this.mostrarFeedBack = false;
+        this.yaCompletada = false;
         console.log('✅ [Frontend] ¡Lección cargada!', this.leccionActual);
       },
       error: (error) => {
@@ -94,10 +96,10 @@ export class LeccionComponent implements OnInit {
         // Evaluamos el rechazo del backend
         if (err.status === 409) {
           this.esCorrecto = false;
-          this.tituloFeedback = 'Leccion Completada';
+          this.tituloFeedback = '¡Nivel ya dominado!';
           this.mensajeFeedback =
             err.error?.message ||
-            'Ya has completado esta lección anteriormente. ¡Avanza al siguiente desafío!';
+            'Tu historial demuestra que superaste este reto con anterioridad. Usa tu tiempo estratégicamente y avanza hacia nuevos conocimientos.';
           this.mostrarFeedBack = true;
         } else {
           this.esCorrecto = false;
