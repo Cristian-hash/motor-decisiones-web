@@ -13,6 +13,10 @@ import { LeccionService } from '../../services/leccion.service';
 export class LeccionComponent implements OnInit {
   leccionActual: LeccionCompletaDTO | undefined;
 
+  // --- MÁQUINA DE ESTADOS VISUAL ---
+  faseActual: 'PREGUNTA' | 'EVALUANDO' | 'FEEDBACK' = 'PREGUNTA';
+  opcionSeleccionadaId: number | null = null;
+
   // --- BANDERAS DE LA INTERFAZ ---
   mostrarFeedBack: boolean = false;
   esCorrecto: boolean = false;
