@@ -46,7 +46,8 @@ export class AuthService {
       const payloadDecodificado = atob(payloadBase64);
       const payloadJson = JSON.parse(payloadDecodificado);
       return payloadJson.id;
-    } catch {
+    } catch (e){
+      console.error('Error arquitectónico: El token no pudo ser decodificado',e);
       return 0;
     }
   }

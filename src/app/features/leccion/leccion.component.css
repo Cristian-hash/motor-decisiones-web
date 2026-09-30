@@ -1,0 +1,123 @@
+/* DISEÑO TIPO DUOLINGO */
+.contenedor-principal {
+  padding-bottom: 120px; /* Espacio para el footer */
+}
+
+.area-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.area-opciones.bloqueado {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-opcion {
+  background: white;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.btn-opcion:hover {
+  background: #f7f7f7;
+}
+
+/* OPCCIÓN SELECCIONADA */
+.btn-opcion.seleccionada {
+  border-color: #84d8ff;
+  background: #ddf4ff;
+  color: #1cb0f6;
+  font-weight: bold;
+}
+
+/* BARRA INFERIOR */
+.barra-acciones {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-top: 2px solid #e5e5e5;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+.barra-acciones.feedback-correcto {
+  background: #d7ffb8;
+  border-top-color: #b8f28b;
+  color: #58a700;
+}
+
+.barra-acciones.feedback-incorrecto {
+  background: #ffdfe0;
+  border-top-color: #ffc1c1;
+  color: #ea2b2b;
+}
+
+.contenedor-botones, .panel-feedback {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+/* BOTONES INFERIORES */
+.btn-saltar {
+  background: transparent;
+  border: 2px solid #e5e5e5;
+  color: #afafaf;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-saltar:hover { background: #f2f2f2; }
+
+.btn-comprobar, .btn-continuar {
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-bottom: 4px solid #58a700; /* Efecto 3D 1 */
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  flex-grow: 1; /* Si no hay botón saltar, ocupa el espacio */
+  max-width: 300px;
+}
+
+.btn-comprobar:disabled {
+  background: #e5e5e5;
+  border-bottom-color: #e5e5e5;
+  color: #afafaf;
+  cursor: not-allowed;
+}
+
+.btn-comprobar:active:not(:disabled), .btn-continuar:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.feedback-incorrecto .btn-continuar {
+  background: #ff4b4b;
+  border-bottom-color: #ea2b2b;
+}
+
+.opcion-correcta-texto {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}

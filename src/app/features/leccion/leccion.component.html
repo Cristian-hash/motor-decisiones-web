@@ -1,45 +1,78 @@
 <main class="contenedor-principal">
   <h1>Motor de Decisiones Vivo</h1>
+
   @if (leccionActual) {
     <section class="tarjeta-leccion">
       <h2>{{ leccionActual.titulo }}</h2>
-      <p class="problema"><strong>El Problema:</strong>{{ leccionActual.problemaHook }}</p>
-      <p class="metafora"><strong>Metafora:</strong>{{ leccionActual.metafora }}</p>
+      <p class="problema"><strong>El Problema:</strong> {{ leccionActual.problemaHook }}</p>
 
-      <div class="bloque-codigo">
-        <pre><code>{{leccionActual.pseudocodigo}}</code></pre>
-      </div>
+      <div class="area-opciones" [class.bloqueado]="faseActual !== 'PREGUNTA'">
+        <h3>¿Qué patrón elegirías?</h3>
 
-      <div class="area-opciones">
-        <h3>¿Qué patrón elegirias?</h3>
         @for (opcion of leccionActual.opciones; track opcion.id) {
-          <button class="btn-opcion" (click)="evaluarOpcion(opcion.id)">
+          <button
+            class="btn-opcion"
+            [class.seleccionada]="opcionSeleccionadaId === opcion.id"
+            (click)="seleccionarOpcion(opcion.id)"
+          >
             {{ opcion.textoOpcion }}
           </button>
         }
       </div>
-      @if (mostrarFeedBack == true) {
-        <div>
-          <h3>{{ tituloFeedback }}</h3>
-          <p>{{ mensajeFeedback }}</p>
-          @if (esCorrecto) {
-            <p class="puntos">
-              Has ganado <strong> + {{ puntosGanados }} XP.</strong>
-            </p>
-          }
-          @if (esCorrecto) {
-            <button class="btn-cerrar" (click)="avanzarSiguienteLeccion()">
-              Siguiente Lección
-            </button>
-          } @else {
-            <button class="btn-cerrar" (click)="mostrarFeedBack = false">Intentar de nuevo</button>
-          }
+    </section>
+
+    <!-- BARRA INFERIOR (Sticky Bottom) -->
+    <footer
+      class="barra-acciones"
+      [class.feedback-correcto]="faseActual === 'FEEDBACK' && esCorrecto"
+      [class.feedback-incorrecto]="faseActual === 'FEEDBACK' && !esCorrecto && !yaCompletada"
+    >
+      <!-- ESTADO: PREGUNTA -->
+      @if (faseActual === 'PREGUNTA') {
+        <div class="contenedor-botones">
+          <button class="btn-saltar" (click)="saltar()">SALTAR</button>
+          <button
+            class="btn-comprobar"
+            [disabled]="!opcionSeleccionadaId"
+            (click)="comprobarRespuesta()"
+          >
+            COMPROBAR
+          </button>
         </div>
       }
-    </section>
+
+      <!-- ESTADO: EVALUANDO -->
+      @if (faseActual === 'EVALUANDO') {
+        <div class="contenedor-botones">
+          <button class="btn-comprobar evaluando" disabled>Evaluando...</button>
+        </div>
+      }
+
+      <!-- ESTADO: FEEDBACK -->
+      @if (faseActual === 'FEEDBACK') {
+        <div class="panel-feedback">
+          <div class="mensaje-feedback">
+            <h3>
+              @if (esCorrecto) {
+                ✓
+              } @else if (!yaCompletada) {
+                ✕
+              }
+              {{ tituloFeedback }}
+            </h3>
+
+            <!-- Mostrar opción correcta si falló -->
+            @if (!esCorrecto && !yaCompletada) {
+              <p class="opcion-correcta-texto">{{ textoOpcionCorrecta }}</p>
+            }
+
+            <p>{{ mensajeFeedback }}</p>
+          </div>
+          <button class="btn-continuar" (click)="continuar()">CONTINUAR</button>
+        </div>
+      }
+    </footer>
   } @else {
-    <div class="cargando">
-      <p>Consultando el cerebro de Spring Boot... ⏳</p>
-    </div>
+    <div class="cargando"><p>Consultando el cerebro de Spring Boot... ⏳</p></div>
   }
 </main>
