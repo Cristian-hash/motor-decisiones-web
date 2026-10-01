@@ -199,26 +199,33 @@ export class LeccionComponent implements OnInit {
   }
   private obtenerSiguienteDestino(): number {
     const idActual = Number(this.route.snapshot.paramMap.get('id'));
+    const MAX_LECCIONES = 5; // Ajusta este número al total real de tus lecciones base
 
-    // Aquí defines tu regla de fin de lección original.
-    // Por ejemplo, si tienes 5 preguntas originales y estamos en la 5, sacamos de la cola.
-    // (Asumimos una constante MAX_LECCIONES = 5 para el ejemplo, ajústalo a tu lógica).
-    const MAX_LECCIONES = 5;
+    // 1. Consultamos el Macro-Estado: ¿Ya terminamos la primera vuelta?
+    const enFaseRepeticion = localStorage.getItem('faseRepeticion') === 'true';
 
-    if (idActual < MAX_LECCIONES) {
-      return idActual + 1; // Flujo normal
+    // 2. Si estamos en la primera vuelta y no es la última lección, avanzamos normal (+1)
+    if (!enFaseRepeticion && idActual < MAX_LECCIONES) {
+      return idActual + 1;
+    }
+
+    // 3. Si acabamos de procesar la última lección original, encendemos el Macro-Estado de repetición
+    if (idActual === MAX_LECCIONES && !enFaseRepeticion) {
+      localStorage.setItem('faseRepeticion', 'true');
+    }
+
+    // 4. MODO REPETICIÓN: Ignoramos la matemática y delegamos el destino a la cola
+    let cola: number[] = JSON.parse(localStorage.getItem('colaFalladas') || '[]');
+
+    if (cola.length > 0) {
+      // Extraemos el primer ID fallido de la fila (ej. saca el 2, la próxima vez sacará el 4)
+      const siguienteIdFallo = cola.shift()!;
+      localStorage.setItem('colaFalladas', JSON.stringify(cola));
+      return siguienteIdFallo;
     } else {
-      // Modo repetición: extraemos el primero de la cola
-      let cola: number[] = JSON.parse(localStorage.getItem('colaFalladas') || '[]');
-      if (cola.length > 0) {
-        const siguienteIdFallo = cola.shift()!; // Saca el primero
-        localStorage.setItem('colaFalladas', JSON.stringify(cola)); // Guarda la cola actualizada
-        return siguienteIdFallo;
-      } else {
-        // No hay más fallos, la lección terminó por completo.
-        // Retornar 0 o navegar a un Dashboard.
-        return 0;
-      }
+      // Victoria absoluta: La cola está vacía. Limpiamos el estado para futuras sesiones.
+      localStorage.removeItem('faseRepeticion');
+      return 0; // Desencadena el viaje al Dashboard
     }
   }
   private ejecutarNavegacion(siguienteId: number) {
