@@ -14,7 +14,7 @@ export class LeccionComponent implements OnInit {
   leccionActual: LeccionCompletaDTO | undefined;
 
   // --- MÁQUINA DE ESTADOS VISUAL ---
-  faseActual: 'PREGUNTA' | 'EVALUANDO' | 'FEEDBACK' = 'PREGUNTA';
+  faseActual: 'PREGUNTA' | 'EVALUANDO' | 'FEEDBACK' | 'COMPLETADO' = 'PREGUNTA';
   opcionSeleccionadaId: number | null = null;
 
   // --- BANDERAS DE LA INTERFAZ ---
@@ -187,8 +187,21 @@ export class LeccionComponent implements OnInit {
 
   // 4. CONTINUAR (Calcula el siguiente paso estratégico)
   continuar() {
-    this.ejecutarNavegacion(this.obtenerSiguienteDestino());
+    const siguienteId = this.obtenerSiguienteDestino();
+    if (siguienteId === 0) {
+      this.faseActual = 'COMPLETADO';
+    } else {
+      this.ejecutarNavegacion(siguienteId);
+    }
   }
+
+  irAlLobby() {
+    localStorage.removeItem('leccionActual');
+    localStorage.removeItem('colaFalladas');
+    localStorage.removeItem('faseRepeticion');
+    this.router.navigate(['/lobby']);
+  }
+
   // --- LÓGICA DE LA COLA DE APRENDIZAJE ---
   private agregarAColaDeFalladas(id: number) {
     let cola = JSON.parse(localStorage.getItem('colaFalladas') || '[]');

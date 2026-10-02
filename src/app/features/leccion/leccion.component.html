@@ -2,29 +2,66 @@
   <h1>Motor de Decisiones Vivo</h1>
 
   @if (leccionActual) {
-    <section class="tarjeta-leccion">
-      <h2>{{ leccionActual.titulo }}</h2>
-      <p class="problema"><strong>El Problema:</strong> {{ leccionActual.problemaHook }}</p>
+    @if (faseActual !== 'COMPLETADO') {
+      <section class="tarjeta-leccion">
+        <h2>{{ leccionActual.titulo }}</h2>
+        <p class="problema"><strong>El Problema:</strong> {{ leccionActual.problemaHook }}</p>
 
-      <div class="area-opciones" [class.bloqueado]="faseActual !== 'PREGUNTA'">
-        <h3>¿Qué patrón elegirías?</h3>
+        <div class="area-opciones" [class.bloqueado]="faseActual !== 'PREGUNTA'">
+          <h3>¿Qué patrón elegirías?</h3>
 
-        @for (opcion of leccionActual.opciones; track opcion.id) {
-          <button
-            class="btn-opcion"
-            [class.seleccionada]="opcionSeleccionadaId === opcion.id"
-            (click)="seleccionarOpcion(opcion.id)"
+          @for (opcion of leccionActual.opciones; track opcion.id) {
+            <button
+              class="btn-opcion"
+              [class.seleccionada]="opcionSeleccionadaId === opcion.id"
+              (click)="seleccionarOpcion(opcion.id)"
+            >
+              {{ opcion.textoOpcion }}
+            </button>
+          }
+        </div>
+      </section>
+    }
+    <!-- ÁREA DE VICTORIA (Solo se muestra al ganar) -->
+    @if (faseActual === 'COMPLETADO') {
+      <section class="pantalla-victoria" style="text-align: center; padding: 40px">
+        <!-- Aquí puedes poner la imagen del búho felicitando (Imagen 4) -->
+        <h2 style="color: #ffc800; font-size: 32px">¡Completaste la lección!</h2>
+        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px">
+          <div
+            style="
+              background: #ffc800;
+              color: white;
+              padding: 15px;
+              border-radius: 12px;
+              font-weight: bold;
+            "
           >
-            {{ opcion.textoOpcion }}
-          </button>
-        }
-      </div>
-    </section>
+            XP TOTALES <br />
+            ⚡
+          </div>
+          <div
+            style="
+              background: #58cc02;
+              color: white;
+              padding: 15px;
+              border-radius: 12px;
+              font-weight: bold;
+            "
+          >
+            ¡MUY BIEN! <br />
+            🎯 Reto Superado
+          </div>
+        </div>
+      </section>
+    }
 
     <!-- BARRA INFERIOR (Sticky Bottom) -->
     <footer
       class="barra-acciones"
-      [class.feedback-correcto]="faseActual === 'FEEDBACK' && esCorrecto"
+      [class.feedback-correcto]="
+        (faseActual === 'FEEDBACK' && esCorrecto) || faseActual === 'COMPLETADO'
+      "
       [class.feedback-incorrecto]="faseActual === 'FEEDBACK' && !esCorrecto && !yaCompletada"
     >
       <!-- ESTADO: PREGUNTA -->
@@ -69,6 +106,11 @@
             <p>{{ mensajeFeedback }}</p>
           </div>
           <button class="btn-continuar" (click)="continuar()">CONTINUAR</button>
+        </div>
+      }
+      @if (faseActual === 'COMPLETADO') {
+        <div class="contenedor-botones">
+          <button class="btn-continuar" (click)="irAlLobby()">CONTINUAR AL MAPA</button>
         </div>
       }
     </footer>
