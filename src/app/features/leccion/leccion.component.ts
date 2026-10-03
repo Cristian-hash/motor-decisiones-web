@@ -168,10 +168,14 @@ export class LeccionComponent implements OnInit {
         if (err.status === 409) {
           this.esCorrecto = false;
           this.yaCompletada = true;
-          this.tituloFeedback = '¡Nivel ya dominado!';
-          this.mensajeFeedback = 'Tu historial demuestra que superaste este reto con anterioridad.';
+          this.tituloFeedback = '¡Atención!';
+
+          // OBSERVACIÓN: Angular ahora es inteligente y lee exactamente la llave "mensaje" de tu DTO
+          this.mensajeFeedback =
+            err.error?.mensaje || 'Tu historial demuestra que superaste este reto.';
         } else {
           this.tituloFeedback = 'Error de conexión';
+          this.mensajeFeedback = 'Ocurrió un problema de conexión con el Motor de Decisiones.';
         }
       },
     });
