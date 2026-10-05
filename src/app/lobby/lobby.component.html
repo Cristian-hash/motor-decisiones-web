@@ -1,0 +1,32 @@
+<main class="mapa-container">
+  <header class="mapa-header">
+    <h2>Ruta del Arquitecto</h2>
+    <div class="stats">🔥 Mi Progreso</div>
+  </header>
+
+  <section class="camino-vertical">
+    @for (nivel of niveles; track nivel.id) {
+      <div class="nivel-wrapper" [class.estado-bloqueado]="nivel.estado === 'BLOQUEADO'">
+        <!-- Tarjeta de información -->
+        <div class="nivel-info">
+          <h3>{{ nivel.titulo }}</h3>
+        </div>
+
+        <!-- Botón Circular del Mapa -->
+        <button
+          class="btn-circulo"
+          [class.btn-completado]="nivel.estado === 'COMPLETADO'"
+          [class.btn-activo]="nivel.estado === 'ACTIVO'"
+          (click)="entrarAlNivel(nivel)"
+        >
+          <span class="icono">{{ nivel.icono }}</span>
+        </button>
+
+        <!-- La línea conectora que une los niveles (se oculta en el último) -->
+        @if (nivel.id !== niveles.length) {
+          <div class="linea-conectora" [class.linea-dorada]="nivel.estado === 'COMPLETADO'"></div>
+        }
+      </div>
+    }
+  </section>
+</main>
