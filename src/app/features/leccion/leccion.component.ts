@@ -214,37 +214,50 @@ export class LeccionComponent implements OnInit {
       localStorage.setItem('colaFalladas', JSON.stringify(cola));
     }
   }
+
   private obtenerSiguienteDestino(): number {
     const idActual = Number(this.route.snapshot.paramMap.get('id'));
-    const MAX_LECCIONES = 5; // Ajusta este número al total real de tus lecciones base
+    const rutaNivelTexto = localStorage.getItem('rutaNivel');
 
-    // 1. Consultamos el Macro-Estado: ¿Ya terminamos la primera vuelta?
+    // SEGURIDAD: Si no hay mochila, abortamos al Lobby.
+    if (!rutaNivelTexto || rutaNivelTexto === '[]') {
+      console.error('Itinerario vacío. Regresando al Lobby.');
+      return 0;
+    }
+
+    const rutaNivel: number[] = JSON.parse(rutaNivelTexto);
     const enFaseRepeticion = localStorage.getItem('faseRepeticion') === 'true';
 
-    // 2. Si estamos en la primera vuelta y no es la última lección, avanzamos normal (+1)
-    if (!enFaseRepeticion && idActual < MAX_LECCIONES) {
-      return idActual + 1;
+    // FASE 1: RECORRIDO NORMAL DEL NIVEL
+    if (!enFaseRepeticion) {
+      const indiceActual = rutaNivel.indexOf(idActual);
+
+      if (indiceActual === -1) return 0; // Si el ID actual no pertenece al nivel, aborta.
+
+      const esUltimaLeccion = indiceActual === rutaNivel.length - 1;
+
+      if (!esUltimaLeccion) {
+        // La magia de la arquitectura: Extraemos el siguiente ID exacto del arreglo.
+        return rutaNivel[indiceActual + 1];
+      } else {
+        // Se acabaron las preguntas nuevas, encendemos el repechaje.
+        localStorage.setItem('faseRepeticion', 'true');
+      }
     }
 
-    // 3. Si acabamos de procesar la última lección original, encendemos el Macro-Estado de repetición
-    if (idActual === MAX_LECCIONES && !enFaseRepeticion) {
-      localStorage.setItem('faseRepeticion', 'true');
-    }
-
-    // 4. MODO REPETICIÓN: Ignoramos la matemática y delegamos el destino a la cola
+    // FASE 2: REPECHAJE (La Cola de Errores)
     let cola: number[] = JSON.parse(localStorage.getItem('colaFalladas') || '[]');
-
     if (cola.length > 0) {
-      // Extraemos el primer ID fallido de la fila (ej. saca el 2, la próxima vez sacará el 4)
-      const siguienteIdFallo = cola.shift()!;
+      const siguienteIdFallo = cola.shift()!; // Extrae el primero de la fila
       localStorage.setItem('colaFalladas', JSON.stringify(cola));
       return siguienteIdFallo;
     } else {
-      // Victoria absoluta: La cola está vacía. Limpiamos el estado para futuras sesiones.
+      // Nivel superado al 100%
       localStorage.removeItem('faseRepeticion');
-      return 0; // Desencadena el viaje al Dashboard
+      return 0;
     }
   }
+
   private ejecutarNavegacion(siguienteId: number) {
     if (siguienteId === 0) {
       this.router.navigate(['/dashboard']); // Fin total

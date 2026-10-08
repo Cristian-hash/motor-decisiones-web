@@ -28,12 +28,20 @@ export class LobbyComponent implements OnInit {
 
   entrarAlNivel(nivel: any) {
     if (nivel.estado === 'BLOQUEADO') {
-      return; // Evitamos avanzar
+      return; // El escudo del frontend
     }
 
+    // 1. Guardamos la mochila con las rutas exactas.
+    // Usamos || [] por si el backend llega a enviar el dato vacío.
+    const ruta = nivel.rutaIds || nivel.rutaLecciones || [];
+    localStorage.setItem('rutaNivel', JSON.stringify(ruta));
+
+    // 2. Limpiamos memorias residuales de partidas pasadas.
     localStorage.removeItem('faseRepeticion');
     localStorage.removeItem('colaFalladas');
     localStorage.removeItem('leccionActual');
+
+    // 3. Viajamos al ID inicial que dicta Spring Boot.
     this.router.navigate(['/leccion', nivel.leccionInicialId]);
   }
 
