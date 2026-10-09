@@ -1,32 +1,30 @@
-<main class="mapa-container">
-  <header class="mapa-header">
+<main class="contenedor-mapa">
+  <header class="cabecera-mapa">
     <h2>Ruta del Arquitecto</h2>
-    <div class="stats">🔥 Mi Progreso</div>
+    <div class="fuego-progreso">🔥 Mi Progreso</div>
   </header>
 
-  <section class="camino-vertical">
-    @for (nivel of niveles; track nivel.id) {
-      <div class="nivel-wrapper" [class.estado-bloqueado]="nivel.estado === 'BLOQUEADO'">
-        <!-- Tarjeta de información -->
-        <div class="nivel-info">
+  <section class="ruta-vertical">
+    @for (nivel of niveles; track nivel.id; let esElUltimo = $last) {
+      <article class="tarjeta-mision" [class.mision-bloqueada]="nivel.estado === 'BLOQUEADO'">
+        <div class="cartel-titulo">
           <h3>{{ nivel.titulo }}</h3>
+          <span class="estado-texto">{{ nivel.estado }}</span>
         </div>
 
-        <!-- Botón Circular del Mapa -->
         <button
-          class="btn-circulo"
-          [class.btn-completado]="nivel.estado === 'COMPLETADO'"
-          [class.btn-activo]="nivel.estado === 'ACTIVO'"
+          class="boton-accion-3d"
+          [class.boton-completado]="nivel.estado === 'COMPLETADO'"
+          [class.boton-activo]="nivel.estado === 'ACTIVO'"
           (click)="entrarAlNivel(nivel)"
         >
-          <span class="icono">{{ nivel.icono }}</span>
+          <span class="icono-gigante">{{ nivel.icono }}</span>
         </button>
 
-        <!-- La línea conectora que une los niveles (se oculta en el último) -->
-        @if (nivel.id !== niveles.length) {
-          <div class="linea-conectora" [class.linea-dorada]="nivel.estado === 'COMPLETADO'"></div>
+        @if (esElUltimo === false) {
+          <div class="puente-conector" [class.puente-dorado]="nivel.estado === 'COMPLETADO'"></div>
         }
-      </div>
+      </article>
     }
   </section>
 </main>

@@ -216,45 +216,51 @@ export class LeccionComponent implements OnInit {
   }
 
   private obtenerSiguienteDestino(): number {
+    // 1. ¿Dónde estamos parados?
     const idActual = Number(this.route.snapshot.paramMap.get('id'));
+
+    // 2. Revisamos la mochila que nos entregó el Lobby
     const rutaNivelTexto = localStorage.getItem('rutaNivel');
 
-    // SEGURIDAD: Si no hay mochila, abortamos al Lobby.
+    // Si alguien borró la mochila o está vacía, abortamos al Lobby por seguridad
     if (!rutaNivelTexto || rutaNivelTexto === '[]') {
-      console.error('Itinerario vacío. Regresando al Lobby.');
       return 0;
     }
 
     const rutaNivel: number[] = JSON.parse(rutaNivelTexto);
     const enFaseRepeticion = localStorage.getItem('faseRepeticion') === 'true';
 
-    // FASE 1: RECORRIDO NORMAL DEL NIVEL
+    // 3. FASE DE AVANCE NORMAL (Leyendo el itinerario del Backend)
     if (!enFaseRepeticion) {
       const indiceActual = rutaNivel.indexOf(idActual);
 
-      if (indiceActual === -1) return 0; // Si el ID actual no pertenece al nivel, aborta.
-
+      // EL ESCUDO: Si la lección actual no pertenece a esta ruta, aborta.
+      if (indiceActual === -1) {
+        return 0;
+      }
+      // Si llegamos a la última pregunta del itinerario
       const esUltimaLeccion = indiceActual === rutaNivel.length - 1;
 
       if (!esUltimaLeccion) {
-        // La magia de la arquitectura: Extraemos el siguiente ID exacto del arreglo.
+        // Buscamos la posición actual y avanzamos exactamente a la posición siguiente
         return rutaNivel[indiceActual + 1];
       } else {
-        // Se acabaron las preguntas nuevas, encendemos el repechaje.
+        // Terminamos las preguntas originales, encendemos el modo repetición
         localStorage.setItem('faseRepeticion', 'true');
       }
     }
 
-    // FASE 2: REPECHAJE (La Cola de Errores)
+    // 4. FASE DE REPETICIÓN (La cola de errores)
     let cola: number[] = JSON.parse(localStorage.getItem('colaFalladas') || '[]');
     if (cola.length > 0) {
-      const siguienteIdFallo = cola.shift()!; // Extrae el primero de la fila
+      // Extraemos el primer error que cometió el estudiante para que lo vuelva a intentar
+      const siguienteIdFallo = cola.shift()!;
       localStorage.setItem('colaFalladas', JSON.stringify(cola));
       return siguienteIdFallo;
     } else {
-      // Nivel superado al 100%
+      // Si la cola está vacía, el estudiante dominó el nivel al 100%
       localStorage.removeItem('faseRepeticion');
-      return 0;
+      return 0; // Regresamos al Lobby victoriosos
     }
   }
 

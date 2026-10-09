@@ -32,6 +32,22 @@ export class LoginComponent {
 
     this.authService.iniciarSesion(this.credenciales).subscribe({
       next: () => {
+        console.log('✅ Acceso concedido. Redirigiendo al centro de mando...');
+        // LA CORRECCIÓN: El guardia solo te abre la puerta hacia el salón principal.
+        this.router.navigate(['/lobby']);
+      },
+      error: (errorRespuesta) => {
+        console.error('❌ Error en la puerta:', errorRespuesta);
+        this.mensajeError = 'Credenciales incorrectas. Intenta de nuevo.';
+      },
+    });
+  }
+  /*ingresar() {
+    this.mensajeError = '';
+    console.log('✅ Tocando la puerta del servidor...');
+
+    this.authService.iniciarSesion(this.credenciales).subscribe({
+      next: () => {
         console.log('✅Acceso concedido. Consultando el mapa de progreso...');
 
         const usuarioId = this.authService.obtenerIdUsuarioActual();
@@ -49,7 +65,7 @@ export class LoginComponent {
                 '⚠️ No se pudo obtener el progreso, enviando a la Lección 1 por seguridad.',
               );
               // Plan de contingencia si el servidor de progreso falla
-              this.router.navigate(['/leccion/1']);
+              this.router.navigate(['/lobby']);
             },
           });
       },
@@ -58,5 +74,5 @@ export class LoginComponent {
         this.mensajeError = 'Credenciales incorrectas. Intenta de nuevo.';
       },
     });
-  }
+  }*/
 }
