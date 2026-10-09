@@ -21,12 +21,13 @@ export class LobbyComponent implements OnInit {
 
   // PASO 2: LA ELECCIÓN (Cuando haces clic en un círculo)
   entrarAlNivel(nivel: any) {
-    // Si el nivel está bloqueado, abortamos el proceso inmediatamente.
     if (nivel.estado === 'BLOQUEADO') {
       return;
     }
 
-    // El código ahora se lee como un libro de instrucciones claras:
+    // 1. LA LUPA: Imprimimos el objeto exacto recibido del servidor
+    console.log('🔍 [Lobby] Datos del nivel recibidos de Spring Boot:', nivel);
+
     this.prepararMochilaParaElViaje(nivel);
     this.viajarALaPrimeraEstacion(nivel);
   }
@@ -61,12 +62,15 @@ export class LobbyComponent implements OnInit {
   private viajarALaPrimeraEstacion(nivel: any) {
     const ruta = nivel.rutaIds || nivel.rutaLecciones || [];
 
-    // Verificamos poseer estaciones disponibles antes de viajar
+    // 2. LA LUPA: Verificamos qué números extrajo Angular
+    console.log('🗺️ [Lobby] Arreglo de rutas extraído:', ruta);
+
     if (ruta.length > 0) {
-      const primeraLeccionSegura = ruta[0]; // Extraemos el primer ID (Ej: 4 para Observer)
+      const primeraLeccionSegura = ruta[0];
+      console.log(`🚀 [Lobby] Viajando a la lección ID: ${primeraLeccionSegura}`);
       this.router.navigate(['/leccion', primeraLeccionSegura]);
     } else {
-      console.error('El backend omitió enviar lecciones para este patrón.');
+      console.error('❌ [Lobby] Arreglo de rutas vacío. Angular carece de destino.');
     }
   }
 
