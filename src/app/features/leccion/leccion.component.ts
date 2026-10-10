@@ -264,29 +264,21 @@ export class LeccionComponent implements OnInit {
     }
   }
 
+  // LA CORRECCIÓN MAESTRA: Inteligencia de recarga local
   private ejecutarNavegacion(siguienteId: number) {
     if (siguienteId === 0) {
-      this.router.navigate(['/dashboard']); // Fin total
+      this.faseActual = 'COMPLETADO';
     } else {
       localStorage.setItem('leccionActual', siguienteId.toString());
-      this.router.navigate(['/leccion', siguienteId]);
+
+      const idActual = Number(this.route.snapshot.paramMap.get('id'));
+
+      if (idActual === siguienteId) {
+        console.log('🔄 [Frontend] Repitiendo el reto. Recargando datos manualmente...');
+        this.pedirLeccionAlBackend(siguienteId);
+      } else {
+        this.router.navigate(['/leccion', siguienteId]);
+      }
     }
-  }
-
-  avanzarSiguienteLeccion() {
-    // 1. Observo: Buscamos la verdad absoluta en la URL actual, no en el DTO
-    const idActualEnUrl = Number(this.route.snapshot.paramMap.get('id'));
-
-    // 2. Comprendo: Calculamos matemáticamente el siguiente paso
-    const siguienteId = idActualEnUrl + 1;
-    console.log(`[Arquitectura] Avanzando de lección ${idActualEnUrl} a ${siguienteId}`);
-
-    // 3. Corrijo: Sellamos la memoria del navegador ANTES de pedir el viaje
-    localStorage.setItem('leccionActual', siguienteId.toString());
-
-    // 4. Avanzo: Ordenamos al orquestador visual que ejecute el cambio de pantalla
-    this.router.navigate(['/leccion', siguienteId]).then((viajeExitoso) => {
-      console.log(`[Frontend] ¿El Guardia permitió el paso?: ${viajeExitoso}`);
-    });
   }
 }
