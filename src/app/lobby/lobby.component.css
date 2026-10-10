@@ -1,107 +1,146 @@
-/* EL TABLERO COMPLETO */
+/* FONDO DEL TABLERO */
 .contenedor-mapa {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f7f9fa;
+  background-color: #f7f9fa; /* Gris muy claro, no blanco puro */
+  min-height: 100vh;
   padding: 40px 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
 }
 
 .cabecera-mapa {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
+.cabecera-mapa h2 {
+  font-size: 28px;
+  color: #3c3c3c;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.fuego-progreso {
+  background: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  color: #ff9600;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  display: inline-block;
+}
+
+/* COLUMNA CENTRAL */
 .ruta-vertical {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 400px;
 }
 
-/* CADA CASILLA DEL JUEGO */
-.parada-mapa {
+/* CONTENEDOR DE CADA MISIÓN */
+.casilla-nivel {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   position: relative;
 }
 
-/* EL CARTEL DE TEXTO */
-.etiqueta-nivel {
+/* 1. EL CARTEL DE TEXTO */
+.cartel-titulo {
   background: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 16px;
   border: 2px solid #e5e5e5;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+  text-align: center;
+  margin-bottom: -15px; /* Atrae el botón hacia arriba para que parezcan unidos */
+  box-shadow: 0 4px 0 rgba(0,0,0,0.02);
+  z-index: 3;
 }
 
-.etiqueta-nivel h3 {
+.cartel-titulo h3 {
   margin: 0;
   font-size: 16px;
-  font-weight: 700;
   color: #4b4b4b;
 }
 
-/* EL BOTÓN 3D */
-.boton-nivel {
+.estado-texto {
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  color: #afafaf;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* 2. EL BOTÓN GAMIFICADO 3D */
+.boton-3d {
   width: 90px;
   height: 90px;
   border-radius: 50%;
   border: none;
-  font-size: 38px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.1s;
-  background-color: #e5e5e5; /* Color por defecto: Gris Bloqueado */
-  box-shadow: 0 8px 0 #cecece; /* La sombra que crea el efecto 3D */
+  transition: transform 0.1s, box-shadow 0.1s;
+  background-color: #e5e5e5; /* Gris por defecto */
+  box-shadow: 0 8px 0 #cecece; /* La sombra que hace el efecto 3D */
+  z-index: 2; /* Mantiene el botón sobre el puente */
 }
 
-/* Efecto al presionar el botón (se hunde) */
-.boton-nivel:active {
+.icono-gigante {
+  font-size: 38px;
+}
+
+/* Física del clic: El botón baja y la sombra se encoge */
+.boton-3d:active {
   transform: translateY(4px);
   box-shadow: 0 4px 0 #cecece;
 }
 
-/* COLOR: ACTIVO (Verde vibrante) */
-.boton-nivel.activo {
+/* ESTADO: ACTIVO (Verde) */
+.boton-3d.activo {
   background-color: #58cc02;
   box-shadow: 0 8px 0 #58a700;
 }
-.boton-nivel.activo:active {
+.boton-3d.activo:active {
   box-shadow: 0 4px 0 #58a700;
 }
 
-/* COLOR: COMPLETADO (Dorado brillante) */
-.boton-nivel.completado {
+/* ESTADO: COMPLETADO (Dorado) */
+.boton-3d.completado {
   background-color: #ffc800;
   box-shadow: 0 8px 0 #e5b400;
 }
-.boton-nivel.completado:active {
+.boton-3d.completado:active {
   box-shadow: 0 4px 0 #e5b400;
 }
 
-/* EFECTO OPACIDAD PARA NIVELES BLOQUEADOS */
-.parada-mapa.bloqueado .etiqueta-nivel {
+/* ESTADO: BLOQUEADO (Opaco e inactivo) */
+.casilla-nivel.bloqueado {
   opacity: 0.5;
+  filter: grayscale(40%);
 }
-.parada-mapa.bloqueado .boton-nivel {
-  cursor: default; /* Quita la manito del cursor */
+.casilla-nivel.bloqueado .boton-3d {
+  cursor: default; 
+  pointer-events: none; /* Bloquea clics accidentales */
 }
 
-/* EL CAMINO ENTRE CASILLAS */
-.linea-camino {
-  width: 12px;
-  height: 60px;
+/* 3. EL PUENTE CONECTOR */
+.puente {
+  width: 16px;
+  height: 45px;
   background-color: #e5e5e5;
-  margin: 15px 0;
-  border-radius: 6px;
+  margin-top: -10px; /* Sube el puente para esconderlo detrás del botón */
+  margin-bottom: 25px;
+  border-radius: 8px;
+  z-index: 1; /* Se dibuja en el fondo */
 }
 
-.linea-camino.linea-completada {
-  background-color: #ffc800; /* Se pinta de dorado si ya pasaste por ahí */
+.puente.puente-dorado {
+  background-color: #ffc800;
 }

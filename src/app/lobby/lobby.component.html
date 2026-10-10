@@ -5,24 +5,28 @@
   </header>
 
   <section class="ruta-vertical">
+    <!-- El bucle que dibuja cada nivel -->
     @for (nivel of niveles; track nivel.id; let esElUltimo = $last) {
-      <article class="tarjeta-mision" [class.mision-bloqueada]="nivel.estado === 'BLOQUEADO'">
+      <article class="casilla-nivel" [class.bloqueado]="nivel.estado === 'BLOQUEADO'">
+        <!-- 1. El Cartel Blanco Superior -->
         <div class="cartel-titulo">
           <h3>{{ nivel.titulo }}</h3>
           <span class="estado-texto">{{ nivel.estado }}</span>
         </div>
 
+        <!-- 2. El Botón Circular 3D -->
         <button
-          class="boton-accion-3d"
-          [class.boton-completado]="nivel.estado === 'COMPLETADO'"
-          [class.boton-activo]="nivel.estado === 'ACTIVO'"
+          class="boton-3d"
+          [class.completado]="nivel.estado === 'COMPLETADO'"
+          [class.activo]="nivel.estado === 'ACTIVO'"
           (click)="entrarAlNivel(nivel)"
         >
           <span class="icono-gigante">{{ nivel.icono }}</span>
         </button>
 
-        @if (esElUltimo === false) {
-          <div class="puente-conector" [class.puente-dorado]="nivel.estado === 'COMPLETADO'"></div>
+        <!-- 3. El Puente Conector (Se oculta en el último nivel) -->
+        @if (!esElUltimo) {
+          <div class="puente" [class.puente-dorado]="nivel.estado === 'COMPLETADO'"></div>
         }
       </article>
     }
